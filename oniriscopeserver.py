@@ -83,12 +83,8 @@ def keyPressed(key):
 # Main loop.  Has to be here –in the main thread– rendering everything and
 # listening to input events.
 while True:
-    cam_frame = cam.read()
-    animation_frame = output.read()
-    # drawText(animation_frame, "%i/%i" % (player.current_frame, player.getNumFrames()))
-    gray = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2GRAY)
-    cv2.imshow('Input', gray)
-    cv2.imshow('Output', animation_frame)
+    output_frame = output.read()
+    cv2.imshow('Output', output_frame)
     key = cv2.waitKey(1) & 0xFF
     if key != 255:
         keyPressed(key)
