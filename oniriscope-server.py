@@ -14,7 +14,9 @@ player.start()
 # available outputs to be rendered
 outputs = [cam, player]
 # output index
-output = outputs[0]
+output = outputs[1]
+
+draw_text = True
 
 def destroy(args):
     """Exit the program"""
@@ -43,12 +45,27 @@ def setOutput(index):
     output = outputs[index]
     log.debug(output)
 
+def toggleText(args):
+    """Toggle info display."""
+    global draw_text
+    draw_text = not(draw_text)
+
+def drawText(img, msg):
+    """
+    Draws text on the image.
+    img: Image where the text will be printed.
+    msg: Message to be printed.
+    """
+    cv2.putText(img, msg, (10,10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
+
+
 # Map keys to functions
 keymap = {
     "q": destroy,
     " ": addFrame,
     "0": setOutput,
     "1": setOutput,
+    "t": toggleText,
 }
 
 def keyPressed(key):
@@ -63,6 +80,7 @@ def keyPressed(key):
 while True:
     cam_frame = cam.read()
     animation_frame = output.read()
+    # drawText(animation_frame, "%i/%i" % (player.current_frame, player.getNumFrames()))
     gray = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2GRAY)
     cv2.imshow('Input', gray)
     cv2.imshow('Output', animation_frame)

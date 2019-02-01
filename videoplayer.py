@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 from threading import Thread
 import os
+from time import sleep
 
 from logger import *
 
@@ -13,9 +14,11 @@ class VideoPlayer():
         self.default_img_path = data_path + "/imgs/default.jpg"
         self.default_img = cv2.imread(self.default_img_path, 0)
         # log.debug(data_path)
-        self.currentframe = 0
+        self.current_frame = 0
         self.frame = self.default_img
         self.stopped = False
+        self.fps = 12
+        self.play_speed = 12/60
 
     def addFrame(self, img):
         """Sets image as last frame"""
@@ -34,9 +37,12 @@ class VideoPlayer():
             if len(self.frames) < 1:
                 self.frame = self.default_img
             else:
-                self.frame = self.frames[self.currentframe]
+                self.frame = self.frames[self.current_frame]
+                self.current_frame = (self.current_frame + 1) % len(self.frames)
+                sleep(self.play_speed)
 
     def read(self):
+        """Returns current frame."""
         return self.frame
 
 
@@ -44,3 +50,7 @@ class VideoPlayer():
         """Stop the thread"""
         self.stopped = True
         log.debug("Player thread is stopped: %s", self.stopped)
+
+    def getNumFrames(self):
+        """Returns the number of frames."""
+        return len(self.frames)
