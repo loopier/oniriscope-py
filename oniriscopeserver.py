@@ -3,7 +3,10 @@ import os
 
 from videograbber import VideoGrabber
 from videoplayer import VideoPlayer
-from logger import *
+import logger as Logger
+import controller as ctl
+
+log = Logger.new()
 
 cam = VideoGrabber(1)
 cam.start()
@@ -77,6 +80,8 @@ def keyPressed(key):
         log.debug("Key not mapped: %", key)
     return func(key)
 
+# Main loop.  Has to be here –in the main thread– rendering everything and
+# listening to input events.
 while True:
     cam_frame = cam.read()
     animation_frame = output.read()

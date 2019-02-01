@@ -4,7 +4,9 @@ from threading import Thread
 import os
 from time import sleep
 
-from logger import *
+import logger as Logger
+
+log = Logger.new()
 
 class VideoPlayer():
     def __init__(self, sourceId=0):

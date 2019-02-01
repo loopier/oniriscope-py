@@ -3,7 +3,9 @@
 from threading import Thread
 import cv2
 
-from logger import *
+import logger as Logger
+
+log = Logger.new()
 
 class VideoGrabber():
     def __init__(self, sourceId=0):
