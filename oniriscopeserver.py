@@ -62,14 +62,18 @@ def drawText(img, msg):
     """
     cv2.putText(img, msg, (10,10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
 
-
 # Map keys to functions
 keymap = {
     "q": destroy,
     " ": addFrame,
+    "p": player.togglePlay,
     "0": setOutput,
     "1": setOutput,
     "t": toggleText,
+    100: player.previousFrame, # left arrow
+    102: player.nextFrame, # right arrow
+    # 98: # up arrow
+    # 104: # down arrow
 }
 
 def keyPressed(key):

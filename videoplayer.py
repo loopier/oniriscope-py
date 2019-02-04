@@ -49,11 +49,24 @@ class VideoPlayer():
         """Returns current frame."""
         return self.frame
 
+	def togglePlay(self):
+		self.stopped = not(self.stopped)
 
     def stop(self):
         """Stop the thread"""
         self.stopped = True
         log.debug("Player thread is stopped: %s", self.stopped)
+
+    def nextFrame(self):
+		self.current_frame += 1
+		if (self.current_frame > len(self.frames) - 1):
+			self.current_frame = 0
+
+	def previousFrame(self):
+		self.current_frame -= 1
+		if (self.current_frame < 0):
+			self.current_frame = len(self.frames)-1
+	
 
     def getNumFrames(self):
         """Returns the number of frames."""
