@@ -19,8 +19,9 @@ class VideoPlayer():
         self.current_frame = 0
         self.frame = self.default_img
         self.stopped = False
+        self.paused = False
         self.fps = 12
-        self.play_speed = self.fps / 60.0 
+        self.play_speed = 1 / self.fps
 
     def addFrame(self, img):
         """Sets image as last frame"""
@@ -39,18 +40,20 @@ class VideoPlayer():
             if len(self.frames) < 1:
                 self.frame = self.default_img
             else:
+                if self.paused:
+                    pass
+                else:
+                    self.nextFrame()
                 self.frame = self.frames[self.current_frame]
-                self.current_frame = (self.current_frame + 1) % len(self.frames)
-                
+
             sleep(self.play_speed)
-            print(self.play_speed)
 
     def read(self):
         """Returns current frame."""
         return self.frame
 
-	def togglePlay(self):
-		self.stopped = not(self.stopped)
+    def togglePlay(self):
+        self.paused = not(self.paused)
 
     def stop(self):
         """Stop the thread"""
@@ -58,15 +61,28 @@ class VideoPlayer():
         log.debug("Player thread is stopped: %s", self.stopped)
 
     def nextFrame(self):
-		self.current_frame += 1
-		if (self.current_frame > len(self.frames) - 1):
-			self.current_frame = 0
+        self.current_frame += 1
+        if (self.current_frame > len(self.frames) - 1):
+            self.current_frame = 0
 
-	def previousFrame(self):
-		self.current_frame -= 1
-		if (self.current_frame < 0):
-			self.current_frame = len(self.frames)-1
-	
+    def previousFrame(self):
+        self.current_frame -= 1
+        if (self.current_frame < 0):
+            self.current_frame = len(self.frames)-1
+
+    def setFramerate(self, fps):
+        self.fps = max(1, fps)
+        log.info("FPS: %i", self.fps)
+        self.play_speed = float(1.0 / self.fps)
+        log.debug("Play speed: %f", self.play_speed)
+
+    def increaseFramerate(self):
+        self.fps += 1
+        self.setFramerate(self.fps)
+
+    def decreaseFramerate(self):
+        self.fps -= 1
+        self.setFramerate(self.fps)
 
     def getNumFrames(self):
         """Returns the number of frames."""

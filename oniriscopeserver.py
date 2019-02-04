@@ -2,6 +2,9 @@
 
 import cv2
 import os
+import pprint as pp
+import numpy as np
+import re
 
 from videograbber import VideoGrabber
 from videoplayer import VideoPlayer
@@ -54,6 +57,21 @@ def toggleText(args):
     global draw_text
     draw_text = not(draw_text)
 
+def togglePlay(args):
+    player.togglePlay()
+
+def nextFrame(args):
+    player.nextFrame()
+
+def previousFrame(args):
+    player.previousFrame()
+
+def increaseFramerate(args):
+    player.increaseFramerate()
+
+def decreaseFramerate(args):
+    player.decreaseFramerate()
+
 def drawText(img, msg):
     """
     Draws text on the image.
@@ -61,17 +79,28 @@ def drawText(img, msg):
     msg: Message to be printed.
     """
     cv2.putText(img, msg, (10,10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
+    cv2.imshow("Message", img)
+
+def showHelp(args):
+    """Dislpay commands."""
+    help_string = pp.pformat(keymap)
+    help_string = help_string.replace("<function", "")
+    print(help_string)
+
 
 # Map keys to functions
 keymap = {
     "q": destroy,
     " ": addFrame,
-    "p": player.togglePlay,
+    "p": togglePlay,
     "0": setOutput,
     "1": setOutput,
     "t": toggleText,
-    100: player.previousFrame, # left arrow
-    102: player.nextFrame, # right arrow
+    "h": showHelp,
+    "w": increaseFramerate,
+    "s": decreaseFramerate,
+    "a": previousFrame, # left arrow
+    "d": nextFrame, # right arrow
     # 98: # up arrow
     # 104: # down arrow
 }
