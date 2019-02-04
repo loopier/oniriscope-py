@@ -1,14 +1,15 @@
+# -*- coding: utf-8 -*-
+
 import cv2
 import os
 
 from videograbber import VideoGrabber
 from videoplayer import VideoPlayer
 import logger as Logger
-import controller as ctl
 
 log = Logger.new()
 
-cam = VideoGrabber(1)
+cam = VideoGrabber(0)
 cam.start()
 
 player = VideoPlayer(1)
