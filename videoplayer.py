@@ -21,7 +21,7 @@ class VideoPlayer():
         self.stopped = False
         self.paused = False
         self.fps = 12
-        self.play_speed = 1 / self.fps
+        self.play_speed = 1.0 / self.fps
 
     def addFrame(self, img):
         """Sets image as last frame"""

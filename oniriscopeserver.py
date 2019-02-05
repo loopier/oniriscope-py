@@ -9,6 +9,7 @@ import re
 from videograbber import VideoGrabber
 from videoplayer import VideoPlayer
 import logger as Logger
+import encoder as encoder
 
 log = Logger.new()
 
@@ -18,6 +19,8 @@ cam.start()
 player = VideoPlayer(1)
 player.start()
 
+encoder.startEncoder()
+
 # available outputs to be rendered
 outputs = [cam, player]
 # output index
@@ -25,9 +28,20 @@ output = outputs[1]
 
 draw_text = True
 
+def encoderUpdated(delta):
+    """Receives changes from the encoder."""
+    log.debug("Updating frame from encoder change: %i", delta)
+    for x in range(abs(delta)):
+        if delta > 0:
+            nextFrame(0)
+        elif delta < 0:
+            previousFrame(0)
+
+encoder.addCallback(encoderUpdated)
+
 def destroy(args):
-    """Exit the program"""
-    log.info("Closing app")
+    """Exit the program."""
+    log.info("Closing app.")
     cam.stop()
     player.stop()
     cv2.destroyAllWindows()
