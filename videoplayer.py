@@ -31,6 +31,14 @@ class VideoPlayer():
         """Inserts a frame at the current frame position."""
         self.frames.insert(self.current_frame, img)
 
+    def removeFrame(self):
+        """Remove the current frame"""
+        if len(self.frames) <= 0:
+            return
+
+        self.frames.pop(self.current_frame)
+        self.current_frame = max(0, self.current_frame - 1)
+
     def start(self):
         """Start the thread to paint frames"""
         Thread(target=self.update, args=()).start()

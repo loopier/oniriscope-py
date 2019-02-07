@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Make animations from camera stream controlled by physical input (buttons and
 encoder).
@@ -15,7 +16,7 @@ the maps, that's why they must be declared later).
 
 I guess it's somewhat in reverse logic. (?)
 """
-# -*- coding: utf-8 -*-
+
 
 import cv2
 import os
@@ -52,7 +53,7 @@ def destroy(args):
     cv2.destroyAllWindows()
     exit()
 
-def addFrame():
+def addFrame(args=None):
     """
     Takes last frame from the video stream and adds it
     to the playback stream.
@@ -60,13 +61,16 @@ def addFrame():
     frame = cam.read()
     player.addFrame(frame)
 
-def insertFrame():
+def insertFrame(args=None):
     """
     Takes the last frame from the video stream and
     inserts it in the current frame
     """
     frame = cam.read()
     player.insertFrame(frame)
+
+def removeFrame(args=None):
+    player.removeFrame()
 
 def setOutput(index):
     """
@@ -134,8 +138,8 @@ keymap = {
 
 # Map gpio buttons to functions
 button_map = {
-    17: insertFrame(),
-    18: removeFrame(),
+    17: insertFrame,
+    18: removeFrame,
 }
 
 def encoderUpdated(delta):
@@ -166,18 +170,24 @@ def keyPressed(key):
         log.debug("Key not mapped: %", key)
     return func(key)
 
-# Main loop.  Has to be here –in the main thread– rendering everything and
-# listening to input events.
-while True:
-    output_frame = output.read()
-    cv2.imshow('Output', output_frame)
-    key = cv2.waitKey(1) & 0xFF
-    if key != 255:
-        keyPressed(key)
-
-
-encoder.startEncoder()
+def mainThread():
+    """
+    Main loop.  Has to be here –in the main thread– rendering everything and
+    listening to input events.
+    """
+    while True:
+        output_frame = output.read()
+        cv2.imshow('Output', output_frame)
+        key = cv2.waitKey(1) & 0xFF
+        if key != 255:
+            keyPressed(key)
 
 buttons.setup(button_map.keys())
-buttons.start()
+buttons.addButtonPressedCallback(buttonPressed)
 
+buttons.start()
+encoder.startEncoder()
+
+mainThread()
+# Make sure there's a cllean exit.
+destroy()
