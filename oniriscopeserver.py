@@ -10,6 +10,7 @@ from videograbber import VideoGrabber
 from videoplayer import VideoPlayer
 import logger as Logger
 import encoder as encoder
+import buttons as buttons
 
 log = Logger.new()
 
@@ -20,6 +21,8 @@ player = VideoPlayer(1)
 player.start()
 
 encoder.startEncoder()
+buttons.setup([17,18])
+buttons.start()
 
 # available outputs to be rendered
 outputs = [cam, player]
@@ -38,6 +41,11 @@ def encoderUpdated(delta):
             previousFrame(0)
 
 encoder.addCallback(encoderUpdated)
+
+def buttonPressed(button):
+    log.debug("Button pressed: %i", button)
+
+buttons.addButtonPressedCallback(buttonPressed)
 
 def destroy(args):
     """Exit the program."""
