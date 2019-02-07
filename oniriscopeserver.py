@@ -1,3 +1,20 @@
+"""
+Make animations from camera stream controlled by physical input (buttons and
+encoder).
+
+The order of the code is important.
+Generally, there are several input managers (video, encoder, buttons), each
+in a different thread that will take the input and then notify callback
+functions that are in a list of listeners for each kind of input.
+
+- Functions that will process the informtion need to be declared first.
+- Then the maps (dictionaries mapping input info to processing functions).
+- Callback functions are declared and added as listeners to iniput (they use
+the maps, that's why they must be declared later).
+- Finally the thread of every input controller is started.
+
+I guess it's somewhat in reverse logic. (?)
+"""
 # -*- coding: utf-8 -*-
 
 import cv2
@@ -20,35 +37,12 @@ cam.start()
 player = VideoPlayer(1)
 player.start()
 
-encoder.startEncoder()
-
-buttons.setup([17,18])
-buttons.start()
-
 # available outputs to be rendered
 outputs = [cam, player]
 # output index
 output = outputs[1]
 
 draw_text = True
-
-def encoderUpdated(delta):
-    """Receives changes from the encoder."""
-    log.debug("Updating frame from encoder change: %i", delta)
-    for x in range(abs(delta)):
-        if delta > 0:
-            nextFrame(0)
-        elif delta < 0:
-            previousFrame(0)
-
-encoder.addCallback(encoderUpdated)
-
-def buttonPressed(button):
-    log.debug("Button pressed: %i", button)
-    if button == 17:
-        insertFrame()
-
-buttons.addButtonPressedCallback(buttonPressed)
 
 def destroy(args):
     """Exit the program."""
@@ -144,6 +138,25 @@ button_map = {
     18: removeFrame(),
 }
 
+def encoderUpdated(delta):
+    """Receives changes from the encoder."""
+    log.debug("Updating frame from encoder change: %i", delta)
+    for x in range(abs(delta)):
+        if delta > 0:
+            nextFrame(0)
+        elif delta < 0:
+            previousFrame(0)
+
+encoder.addCallback(encoderUpdated)
+
+def buttonPressed(button):
+    """Maps button pressed events to functions."""
+    log.debug("Button pressed: %i", button)
+    func = button_map[button]
+    func()
+
+buttons.addButtonPressedCallback(buttonPressed)
+
 def keyPressed(key):
     key = chr(key)
     global keymap
@@ -161,3 +174,10 @@ while True:
     key = cv2.waitKey(1) & 0xFF
     if key != 255:
         keyPressed(key)
+
+
+encoder.startEncoder()
+
+buttons.setup(button_map.keys())
+buttons.start()
+
