@@ -19,13 +19,17 @@ class VideoPlayer():
         self.current_frame = 0
         self.frame = self.default_img
         self.stopped = False
-        self.paused = False
+        self.paused = True
         self.fps = 12
         self.play_speed = 1.0 / self.fps
 
     def addFrame(self, img):
         """Sets image as last frame"""
         self.frames.append(img)
+
+    def insertFrame(self, img):
+        """Inserts a frame at the current frame position."""
+        self.frames.insert(self.current_frame, img)
 
     def start(self):
         """Start the thread to paint frames"""

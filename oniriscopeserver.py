@@ -21,6 +21,7 @@ player = VideoPlayer(1)
 player.start()
 
 encoder.startEncoder()
+
 buttons.setup([17,18])
 buttons.start()
 
@@ -44,6 +45,8 @@ encoder.addCallback(encoderUpdated)
 
 def buttonPressed(button):
     log.debug("Button pressed: %i", button)
+    if button == 17:
+        insertFrame()
 
 buttons.addButtonPressedCallback(buttonPressed)
 
@@ -55,13 +58,21 @@ def destroy(args):
     cv2.destroyAllWindows()
     exit()
 
-def addFrame(args):
+def addFrame():
     """
     Takes last frame from the video stream and adds it
     to the playback stream.
     """
     frame = cam.read()
     player.addFrame(frame)
+
+def insertFrame():
+    """
+    Takes the last frame from the video stream and
+    inserts it in the current frame
+    """
+    frame = cam.read()
+    player.insertFrame(frame)
 
 def setOutput(index):
     """
@@ -125,6 +136,12 @@ keymap = {
     "d": nextFrame, # right arrow
     # 98: # up arrow
     # 104: # down arrow
+}
+
+# Map gpio buttons to functions
+button_map = {
+    17: insertFrame(),
+    18: removeFrame(),
 }
 
 def keyPressed(key):
