@@ -30,6 +30,8 @@ class VideoPlayer():
     def insertFrame(self, img):
         """Inserts a frame at the current frame position."""
         self.frames.insert(self.current_frame, img)
+        # self.nextFrame()
+        self.previousFrame()
 
     def removeFrame(self):
         """Remove the current frame"""
@@ -63,6 +65,10 @@ class VideoPlayer():
     def read(self):
         """Returns current frame."""
         return self.frame
+
+    def write(self, save_path):
+        """Exports frames as video."""
+        log.info("Saved frames to: %s", save_path)
 
     def togglePlay(self):
         self.paused = not(self.paused)

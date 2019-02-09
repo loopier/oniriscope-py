@@ -27,8 +27,8 @@ import re
 from videograbber import VideoGrabber
 from videoplayer import VideoPlayer
 import logger as Logger
-import encoder as encoder
-import buttons as buttons
+# import encoder as encoder
+# import buttons as buttons
 
 log = Logger.new()
 
@@ -60,6 +60,7 @@ def addFrame(args=None):
     """
     frame = cam.read()
     player.addFrame(frame)
+    nextFrame()
 
 def insertFrame(args=None):
     """
@@ -68,9 +69,15 @@ def insertFrame(args=None):
     """
     frame = cam.read()
     player.insertFrame(frame)
+    nextFrame()
 
 def removeFrame(args=None):
     player.removeFrame()
+
+def save(args=None):
+    """Saves frames as movie."""
+    # Save to usb drive.
+    player.save()
 
 def setOutput(index):
     """
@@ -83,7 +90,7 @@ def setOutput(index):
     output = outputs[index]
     log.debug(output)
 
-def toggleText(args):
+def toggleText(args=None):
     """Toggle info display."""
     global draw_text
     draw_text = not(draw_text)
@@ -91,7 +98,7 @@ def toggleText(args):
 def togglePlay(args):
     player.togglePlay()
 
-def nextFrame(args):
+def nextFrame(args=None):
     player.nextFrame()
 
 def previousFrame(args):
@@ -123,6 +130,8 @@ def showHelp(args):
 keymap = {
     "q": destroy,
     " ": addFrame,
+    "i": insertFrame,
+    "r": removeFrame,
     "p": togglePlay,
     "0": setOutput,
     "1": setOutput,
@@ -130,6 +139,7 @@ keymap = {
     "h": showHelp,
     "w": increaseFramerate,
     "s": decreaseFramerate,
+    "S": save,
     "a": previousFrame, # left arrow
     "d": nextFrame, # right arrow
     # 98: # up arrow
@@ -151,7 +161,7 @@ def encoderUpdated(delta):
         elif delta < 0:
             previousFrame(0)
 
-encoder.addCallback(encoderUpdated)
+
 
 def buttonPressed(button):
     """Maps button pressed events to functions."""
@@ -159,16 +169,16 @@ def buttonPressed(button):
     func = button_map[button]
     func()
 
-buttons.addButtonPressedCallback(buttonPressed)
+
 
 def keyPressed(key):
-    key = chr(key)
+    key_char = chr(key)
     global keymap
-    func = keymap.get(key, lambda key:"nothing")
-    log.debug("Key pressed: %c", key)
+    func = keymap.get(key_char, lambda key:"nothing")
+    log.debug("Key pressed: '%c' - %i", key_char, key)
     if func == None:
-        log.debug("Key not mapped: %", key)
-    return func(key)
+        log.debug("Key not mapped: '%c' - %i", key_char, key)
+    return func(key_char)
 
 def mainThread():
     """
@@ -182,12 +192,17 @@ def mainThread():
         if key != 255:
             keyPressed(key)
 
-buttons.setup(button_map.keys())
-buttons.addButtonPressedCallback(buttonPressed)
+# Add gpio listeners
+# buttons.addButtonPressedCallback(buttonPressed)
+# encoder.addCallback(encoderUpdated)
 
-buttons.start()
-encoder.startEncoder()
+# Initialize gpio
+# buttons.setup(button_map.keys())
+# buttons.addButtonPressedCallback(buttonPressed)
+
+# buttons.start()
+# encoder.startEncoder()
 
 mainThread()
-# Make sure there's a cllean exit.
+# Make sure there's a clean exit.
 destroy()
