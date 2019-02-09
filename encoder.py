@@ -42,7 +42,7 @@ def updateEncoder():
         if delta!=0:
             notifyListeners(delta)
             notifyCallback(delta)
-            print "rotate %d" % delta
+            print("rotate %d", delta)
         else:
             time.sleep(0.1)
 
