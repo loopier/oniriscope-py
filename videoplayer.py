@@ -68,7 +68,8 @@ class VideoPlayer():
 
     def write(self, save_path):
         """Exports frames as video."""
-        log.info("Saved frames to: %s", save_path)
+        # log.info("Saved frames to: %s", save_path)
+        log.debug("Saving movie need implementation.")
 
     def togglePlay(self):
         self.paused = not(self.paused)

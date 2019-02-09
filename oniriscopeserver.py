@@ -23,6 +23,7 @@ import os
 import pprint as pp
 import numpy as np
 import re
+import time
 
 from videograbber import VideoGrabber
 from videoplayer import VideoPlayer
@@ -76,8 +77,23 @@ def removeFrame(args=None):
 
 def save(args=None):
     """Saves frames as movie."""
-    # Save to usb drive.
-    player.write("some/path")
+    # collect frames from player
+    frames = player.frames
+    # prepare file
+    height, width, layers = frames[0].shape
+    path = os.path.dirname(os.path.abspath(__file__))
+    timestamp = time.strftime("%Y%m%dT%H%M%S")
+    filename = "{}/data/output/video-{}.avi".format(path, timestamp)
+    # log.debug(filename)
+    # save
+    framerate = player.fps
+    # codec = cv2.VideoWriter_vourcc(*'XVID')
+    codec = -1
+    video = cv2.VideoWriter(filename, codec, framerate, (width, height))
+    for frame in frames:
+        video.write(frame) 
+    log.info("Saved %i frames to: %s", len(frames), filename)
+    video.release()    
 
 def setOutput(index):
     """
@@ -101,7 +117,7 @@ def togglePlay(args):
 def nextFrame(args=None):
     player.nextFrame()
 
-def previousFrame(args):
+def previousFrame(args=None):
     player.previousFrame()
 
 def increaseFramerate(args):
