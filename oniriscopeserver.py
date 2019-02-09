@@ -77,7 +77,7 @@ def removeFrame(args=None):
 def save(args=None):
     """Saves frames as movie."""
     # Save to usb drive.
-    player.save()
+    player.write("some/path")
 
 def setOutput(index):
     """
@@ -137,9 +137,9 @@ keymap = {
     "1": setOutput,
     "t": toggleText,
     "h": showHelp,
-    "w": increaseFramerate,
-    "s": decreaseFramerate,
-    "S": save,
+    "+": increaseFramerate,
+    "-": decreaseFramerate,
+    "w": save,
     "a": previousFrame, # left arrow
     "d": nextFrame, # right arrow
     # 98: # up arrow
