@@ -87,7 +87,7 @@ def save(args=None):
     # log.debug(filename)
     # save
     framerate = player.fps
-    codec = cv2.VideoWriter_fourcc(*'XVID')
+    codec = cv2.VideoWriter_fourcc(*'MPV4')
     # codec = -1
     video = cv2.VideoWriter(filename, codec, framerate, (width, height))
     for frame in frames:
